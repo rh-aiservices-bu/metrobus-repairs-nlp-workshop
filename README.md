@@ -7,7 +7,7 @@ Solution:  at the end of their shift, when bus drivers check out, they can enter
 
 Maintenance will pick up the report and then investigate the repair claim. 
 
-Intent is for this workshop to eventually use the following services in order to demonstrate service usage in RHODS:
+Intent is for this workshop to eventually use all of the following services in order to demonstrate managed service usage in RHODS:
 1. Grafana for data curation
 2. JupyterHub to run experiments and create the NLP model
 3. Seldon to deploy and manage the NLP model
