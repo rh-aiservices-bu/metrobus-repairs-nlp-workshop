@@ -1,0 +1,16 @@
+markovify
+matplotlib
+numpy
+pandas
+pytest
+regex
+scipy
+seaborn
+spacy
+tensorflow
+tensorflow_hub
+wrapt
+
+
+
+
