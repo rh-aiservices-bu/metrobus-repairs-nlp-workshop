@@ -1,3 +1,5 @@
+Flask
+gunicorn>=20.0.0
 markovify
 matplotlib
 numpy
@@ -7,7 +9,6 @@ regex
 scipy
 seaborn
 spacy
-tensorflow
 tensorflow_hub
 wrapt
 
