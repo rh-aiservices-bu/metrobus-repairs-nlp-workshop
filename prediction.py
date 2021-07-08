@@ -25,9 +25,9 @@ max_words = 1000        #Max words in text input
 data = pd.read_csv('testdata1.csv')
 train_size = int(len(data) * training_portion)
 
-#===================================================
-#train split data
-#===================================================
+#==========================================================
+#split the data for testing and training
+#==========================================================
 def train_test_split(data, train_size):
     train = data[:train_size]
     test = data[train_size:]
@@ -43,28 +43,28 @@ tokenize.fit_on_texts(train_text) # fit tokenizer to our training text data
 x_train = tokenize.texts_to_matrix(train_text)
 x_test = tokenize.texts_to_matrix(test_text)
 
-#===================================================
-# Use sklearn utility to convert label strings to numbered index
-#===================================================
+#==========================================================
+# Use sklearn to convert label strings to a numbered index
+#==========================================================
 encoder = LabelEncoder()  
 encoder.fit(train_cat)
 
-#===================================================
+#==========================================================
 #convert label strings to numbers
-#===================================================
+#==========================================================
 y_train = encoder.transform(train_cat)
 y_test = encoder.transform(test_cat)
 
-#====================================================
-# Converts the labels to a one-hot representation
-#===================================================
+#==========================================================
+# Convert the labels to a one-hot representation
+#==========================================================
 num_classes = len(set(y_train))  
 y_train = to_categorical(y_train, num_classes)  
 y_test = to_categorical(y_test, num_classes)
 
-#===================================================
+#==========================================================
 # Build the model
-#===================================================
+#==========================================================
 layers = keras.layers
 models = keras.models
 model = models.Sequential()
@@ -88,18 +88,18 @@ score = model.evaluate(x_test, y_test,
 
 text_labels = encoder.classes_   #ndarray of output values (labels or classes)  e.g. other, brakes, starter
 
-#===================================================
+#==========================================================
 # Examine first 10 test samples of 445
-#===================================================
+#==========================================================
 for i in range(len(test_cat)):
     temp = x_test[i]
     prediction = model.predict(np.array([x_test[i]]))
     predicted_label = text_labels[np.argmax(prediction)]  #predicted class
 
-#===================================================
-#Prediction function - takes input of text describing a repair issue 
-#e.g. 'when I turn the key I hear a clicking noise'
-#===================================================
+#==========================================================
+#Prediction function - takes input of text describing a
+#repair issue.  e.g. 'when I turn the key I hear a clicking noise'
+#==========================================================
 def predict(single_test_text):
     text_as_series = pd.Series(single_test_text) #do a data conversion
     single_x_test = tokenize.texts_to_matrix(text_as_series)
