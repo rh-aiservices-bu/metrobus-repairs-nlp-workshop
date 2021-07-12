@@ -22,7 +22,7 @@ from tensorflow import keras
 training_portion = .80  # Use 80% of data for training, 20% for testing
 max_words = 1000        #Max words in text input
 
-data = pd.read_csv('testdata1.csv')
+data = pd.read_csv('dataset/testdata1.csv')
 train_size = int(len(data) * training_portion)
 
 #==========================================================
@@ -89,18 +89,30 @@ score = model.evaluate(x_test, y_test,
 text_labels = encoder.classes_   #ndarray of output values (labels or classes)  e.g. other, brakes, starter
 
 #==========================================================
+# Save labels (categories) to be used later when we run the
+# model in flask app
+#==========================================================
+with open('dataset/savedCategories.csv', 'w') as file:
+    writer = csv.writer(file, delimiter=',', lineterminator='\\n')
+    for i in range(len(text_labels)):
+        temp = text_labels[i]
+        writer.writerow(temp)
+
+
+#==========================================================
 # Examine first 10 test samples of 445
 #==========================================================
 for i in range(len(test_cat)):
     temp = x_test[i]
     prediction = model.predict(np.array([x_test[i]]))
     predicted_label = text_labels[np.argmax(prediction)]  #predicted class
-
+    
 #==========================================================
 #Prediction function - takes input of text describing a
 #repair issue.  e.g. 'when I turn the key I hear a clicking noise'
 #==========================================================
 def predict(single_test_text):
+    #model = keras.models.load_model('models/repairmodel.h5')
     text_as_series = pd.Series(single_test_text) #do a data conversion
     single_x_test = tokenize.texts_to_matrix(text_as_series)
     single_prediction = model.predict(np.array([single_x_test]))
@@ -108,5 +120,5 @@ def predict(single_test_text):
     # return (single_predicted_label)
     return {'prediction': single_predicted_label}
 #test prediction function ===========================================
-#prediction = predict(single_test_text)  
+prediction = predict(single_test_text)  
 #print('returned prediction: ' + prediction)
