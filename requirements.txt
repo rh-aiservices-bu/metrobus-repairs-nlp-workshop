@@ -1,17 +1,13 @@
 Flask
-gunicorn>=20.0.0
-markovify
-matplotlib
-numpy
-pandas
-pytest
-regex
-scipy
-seaborn
-spacy
-tensorflow_hub
-wrapt
-
+gunicorn
+opencv-python-headless==4.5.*
+keras==2.4.*
+tensorflow-gpu==2.4.1
+scikit-image==0.18.1
+scikit-learn==0.24.1
+h5py==2.10.0
+spacy==3.1.0
+statsmodels==0.10.2
 
 
 
