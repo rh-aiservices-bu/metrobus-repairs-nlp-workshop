@@ -92,11 +92,11 @@ text_labels = encoder.classes_   #ndarray of output values (labels or classes)  
 # Save labels (categories) to be used later when we run the
 # model in flask app
 #==========================================================
-with open('dataset/savedCategories.csv', 'w') as file:
-    writer = csv.writer(file, delimiter=',', lineterminator='\\n')
-    for i in range(len(text_labels)):
-        temp = text_labels[i]
-        writer.writerow(temp)
+#with open('dataset/savedCategories.csv', 'w') as file:
+#    writer = csv.writer(file, delimiter=',', lineterminator='\\n')
+#    for i in range(len(text_labels)):
+#        temp = text_labels[i]
+#        writer.writerow(temp)
 
 
 #==========================================================
@@ -111,14 +111,17 @@ for i in range(len(test_cat)):
 #Prediction function - takes input of text describing a
 #repair issue.  e.g. 'when I turn the key I hear a clicking noise'
 #==========================================================
+
 def predict(single_test_text):
     #model = keras.models.load_model('models/repairmodel.h5')
     text_as_series = pd.Series(single_test_text) #do a data conversion
     single_x_test = tokenize.texts_to_matrix(text_as_series)
     single_prediction = model.predict(np.array([single_x_test]))
+    model.save('models/repairmodel.h5')  #after prediction, save the model
     single_predicted_label = text_labels[np.argmax(single_prediction)]  #maps index of the prediction to the test labels array e.g. brakes
     # return (single_predicted_label)
     return {'prediction': single_predicted_label}
+
 #test prediction function ===========================================
-prediction = predict(single_test_text)  
+#prediction = predict(single_test_text)  
 #print('returned prediction: ' + prediction)
