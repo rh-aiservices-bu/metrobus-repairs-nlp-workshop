@@ -1,16 +1,9 @@
-#===================================================
-#In this script labels are created for our test data, convert the labels to numbered indexes and then use one-hot encoding.  
-
-#-- One hot encoding allows the representation of categorical data to be more expressive. Many machine learning algorithms cannot work with categorical data directly. The categories must be converted into numbers. This is required for both input and output variables that are categorical.
-
-#--After we have converted the labels using one-hot encoding, we are ready to build our main NLP model and train it.
-
-#--Once the model is trained, we can test our model by entering a claim (e.g. the brakes feel soft when I press on them) and check if the model has correctly characterized the claim.  --#
-
-# Load your model.
-# model_dir = 'models/myfancymodel'
-# saved_model = tf.saved_model.load(model_dir)
-# predictor = saved_model.signatures['default']
+#====================================================================================
+# Python prediction file - contains predict function and associated helper functions
+#====================================================================================
+# Users can use the pre-trained model, or create a new model for predicted repairs
+#
+#====================================================================================
 
 import numpy as np 
 import pandas as pd 
@@ -19,14 +12,20 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.utils import to_categorical
 from tensorflow import keras
 
-training_portion = .80  # Use 80% of data for training, 20% for testing
-max_words = 1000        #Max words in text input
+#==========================================================
+# Build dataset - use below to create train & test datasets
+# Use Use 80% of data for training, 20% for testing.
+# max_words is the max amoutn of words in user's text input.
+#=========================================================
+
+training_portion = .80  
+max_words = 1000        
 
 data = pd.read_csv('dataset/testdata1.csv')
 train_size = int(len(data) * training_portion)
 
 #==========================================================
-#split the data for testing and training
+# Split the data for testing and training
 #==========================================================
 def train_test_split(data, train_size):
     train = data[:train_size]
@@ -50,7 +49,7 @@ encoder = LabelEncoder()
 encoder.fit(train_cat)
 
 #==========================================================
-#convert label strings to numbers
+# Convert label strings to numbers
 #==========================================================
 y_train = encoder.transform(train_cat)
 y_test = encoder.transform(test_cat)
@@ -86,7 +85,11 @@ history = model.fit(x_train, y_train,
 score = model.evaluate(x_test, y_test,       
                        batch_size=batch_size, verbose=1)
 
-text_labels = encoder.classes_   #ndarray of output values (labels or classes)  e.g. other, brakes, starter
+#==========================================================
+# text_abels is an ndarray of output values (labels or 
+# classes)  e.g. other, brakes, starter
+#==========================================================
+text_labels = encoder.classes_   
 
 #==========================================================
 # Save labels (categories) to be used later when we run the
@@ -100,28 +103,44 @@ text_labels = encoder.classes_   #ndarray of output values (labels or classes)  
 
 
 #==========================================================
-# Examine first 10 test samples of 445
+# TRY - examine the first 10 test samples of 445
 #==========================================================
-for i in range(len(test_cat)):
-    temp = x_test[i]
-    prediction = model.predict(np.array([x_test[i]]))
-    predicted_label = text_labels[np.argmax(prediction)]  #predicted class
-    
+#for i in range(len(test_cat)):
+#    temp = x_test[i]
+#    prediction = model.predict(np.array([x_test[i]]))
+#    predicted_label = text_labels[np.argmax(prediction)]  #predicted class
+ 
+#==========================================================
+# SAVE model - save the model as an hf file
+#==========================================================
+# model.save('models/repairmodel.h5')  #after prediction, save the model  
+def save_model():
+    model.save('models/repairmodel.h5')
+    return
+
+#==========================================================
+# LOAD model - load model from saved hf file
+#==========================================================
+# model = keras.models.load_model('models/repairmodel.h5')
+def load_model():
+    model = keras.models.load_model('models/repairmodel.h5')
+    return
+
 #==========================================================
 #Prediction function - takes input of text describing a
 #repair issue.  e.g. 'when I turn the key I hear a clicking noise'
 #==========================================================
-
 def predict(single_test_text):
-    #model = keras.models.load_model('models/repairmodel.h5')
+    model = keras.models.load_model('models/repairmodel.h5')
     text_as_series = pd.Series(single_test_text) #do a data conversion
     single_x_test = tokenize.texts_to_matrix(text_as_series)
     single_prediction = model.predict(np.array([single_x_test]))
     model.save('models/repairmodel.h5')  #after prediction, save the model
     single_predicted_label = text_labels[np.argmax(single_prediction)]  #maps index of the prediction to the test labels array e.g. brakes
-    # return (single_predicted_label)
     return {'prediction': single_predicted_label}
 
-#test prediction function ===========================================
-#prediction = predict(single_test_text)  
-#print('returned prediction: ' + prediction)
+#==========================================================
+# test prediction function 
+# prediction = predict(single_test_text)  
+# print('returned prediction: ' + prediction)
+#==========================================================
