@@ -11,7 +11,7 @@ def status():
 
 
 @application.route('/prediction', methods=['POST'])
-def object_detection():
+def create_prediction():
     data = request.data or '{}'
     body = json.loads(data)
     return jsonify(predict(body))
