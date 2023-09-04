@@ -1,6 +1,7 @@
+pip==23.2.1
 markovify==0.9.3
 tensorflow==2.7.0
 scikit-learn==0.24.1
-numpy==1.19.2
+numpy==1.25.2
 pandas==1.2.4
 keras==2.7.0
