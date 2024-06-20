@@ -4,3 +4,4 @@ scikit-learn==0.24.1
 numpy==1.26.0
 pandas==1.2.4
 keras==2.7.0
+Werkzeug~=2.2.2
